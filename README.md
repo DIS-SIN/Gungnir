@@ -1,53 +1,54 @@
-# Gungnir
-Gungnir helps.
+# GRANDstack Starter - GraphQL API
 
 
-## Usage
-- [Getting Started](#getting-started)
-- [GraphQL Queries](#graphql-queries)
-- [Deployment](#deployment)
-- [Built with](#built-with)
+## Quick Start
 
-## Getting Started
+Install dependencies:
 
-These instructions will get you a copy of the tool up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+```
+npm install
+```
 
-### Prerequisites
+Start the GraphQL service:
 
-Gungnir is built with nodeJS packages, therefore will require nodeJS to be installed. It also makes a connection to a neo4j database so make sure you have an neo4j instance running somewhere. 
+```
+npm start
+```
 
-You will also need to create an .env file which will contain your environment variables. It should look like these (Depending on your setup):
+This will start the GraphQL service (by default on localhost:4000) where you can issue GraphQL requests or access GraphQL Playground in the browser:
+
+![GraphQL Playground](img/graphql-playground.png)
+
+## Configure
+
+Set your Neo4j connection string and credentials in `.env`. For example:
+
+*.env*
 
 ```
 NEO4J_URI=bolt://localhost:7687
 NEO4J_USER=neo4j
-NEO4J_PASSWORD=password
-GRAPHQL_LISTEN_PORT=4001
-GRAPHQL_URI=http://localhost:5000/graphql
+NEO4J_PASSWORD=letmein
 ```
 
-### Installing
-
-Once nodeJS is installed, we are ready to get started. 
-
-These steps will help you get started: 
-
-1. Clone or fork the repo
-2. Install the dependencies:
-
-    ```cmd
-    npm install
-    ```
-## GraphQL Queries
-
-Currently Gungnir grabs the existing GQL schema from the neo4j instance, and if needed to add more, add it in src/query.js file.
+Note that grand-stack-starter does not currently bundle a distribution of Neo4j. You can download [Neo4j Desktop](https://neo4j.com/download/) and run locally for development, spin up a [hosted Neo4j Sandbox instance](https://neo4j.com/download/), run Neo4j in one of the [many cloud options](https://neo4j.com/developer/guide-cloud-deployment/), or [spin up Neo4j in a Docker container](https://neo4j.com/developer/docker/). Just be sure to update the Neo4j connection string and credentials accordingly in `.env`.
 
 ## Deployment
 
-You can deploy the tool using docker.
+You can deploy to any service that hosts Node.js apps, but [Zeit Now](https://zeit.co/now) is a great easy to use service for hosting your app that has an easy to use free plan for small projects. 
 
-## Built with
+To deploy your GraphQL service on Zeit Now, first install [Now Desktop](https://zeit.co/download) - you'll need to provide an email address. Then run
 
-- GraphQL
-- Appolo
-- Neo4j Database 
+```
+now
+```
+
+to deploy your GraphQL service on Zeit Now. Once deployed you'll be given a fresh URL that represents the current state of your application where you can access your GraphQL endpoint and GraphQL Playgound. For example: https://grand-stack-starter-api-pqdeodpvok.now.sh/
+
+## Seeding The Database
+
+Optionally you can seed the GraphQL service by executing mutations that will write sample data to the database:
+
+```
+npm run seedDb
+```

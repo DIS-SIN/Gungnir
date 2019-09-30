@@ -1,0 +1,75 @@
+type Survey {
+  uid: ID!
+  uniqueName: String!
+  createdAt: DateTime
+  latest: SurveyTemplate @relation(name:"LATEST_VERSION", direction: "OUT")
+  versions: [SurveyTemplate] @relation(name:"SURVEY_VERSION", direction: "OUT")
+  versionsCount: Int
+      @cypher(
+        statement: "MATCH (this)-[r:SURVEY_VERSION]->(:SurveyTemplate) RETURN COUNT (r)"
+      )
+}
+
+type SurveyTemplate{
+  uid: ID!
+  surveyTemplate: String!
+  versionNumber: Int
+  evalese: String! 
+  createdAt: DateTime
+  survey: Survey @relation(name:"LATEST_VERSION", direction: "IN")
+  responses: [SurveyResponse] @relation(name: "SURVEY_RESPONSE", direction: "OUT")
+  previousVersion: SurveyTemplate @relation(name:"PREVIOUS_VERSION", direction: "BOTH")
+  surveyMetrics: SurveyMetrics @relation(name: "SURVEY_METRICS", direction: "OUT")
+}
+
+type SurveyMetrics{
+  uid: ID!
+  metrics: String
+  processedOn: DateTime
+  surveyTemplate: SurveyTemplate @relation(name: "SURVEY_METRICS", direction: "IN") 
+}
+
+type SurveyResponse{
+  uid: ID!
+  rawData: String!
+  processedData: String
+  createdAt: DateTime
+  startedOn: DateTime
+  completedOn: DateTime
+  surveyTemplate: SurveyTemplate @relation(name: "SURVEY_RESPONSE", direction: "IN")
+  answeredQuestions: [Question] @relation(name: "ANSWERED_QUESTION", direction: "OUT")
+  respondent: Respondent @relation(name: "SURVEY_RESPONDENT", direction: "OUT")
+}
+
+
+type Respondent{
+  uid: ID!
+  userAgent: String
+  surveyEntryMethod: String!
+  responseLanguage: String!
+  department: String
+  classification: String
+  location: String
+  additionalData: String
+  surveyResponse: SurveyResponse @relation(name: "SURVEY_RESPONDENT", direction: "IN")
+}
+
+type Question{
+  uid: ID!
+  questionId: String!
+  questionType: String!
+  classifiedAs: String
+  atOrder: Int
+  englishQuestionText: String
+  frenchQuestionText: String
+  surveyResponse: SurveyResponse @relation(name: "ANSWERED_QUESTION", direction: "IN")
+  answer: Answer @relation(name: "QUESTION_ANSWER", direction: "OUT")
+}
+
+type Answer{
+  uid: ID!
+  answer: String
+  calculatedMetrics: String
+  processedOn: DateTime
+  question: Question @relation(name: "QUESTION_ANSWER", direction: "IN")
+}
